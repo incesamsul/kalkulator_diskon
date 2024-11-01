@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: #eee
+ 
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: black;
+  }
+}
+
+body{
+  background-color: #eee;
+  min-height: 100vh;
+  padding: 1rem;
+}
