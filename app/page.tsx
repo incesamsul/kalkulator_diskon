@@ -1,15 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+
+interface User {
+  id: number;
+  name: string;
+}
+
+interface Todo extends User {
+  realPrice: string; // Adding realPrice to the Todo type
+}
 
 export default function Home() {
-  const [users, setUsers] = useState([]);
-  const [todoList, setTodoList] = useState([]);
-  const [totalAfterDiscount, setTotalAfterDiscount] = useState("");
+  const [users, setUsers] = useState<User[]>([]);
+  const [todoList, setTodoList] = useState<Todo[]>([]);
+  const [totalAfterDiscount, setTotalAfterDiscount] = useState<string>("");
 
   useEffect(() => {
-    const dummyUsers = [
+    const dummyUsers: User[] = [
       { id: 1, name: "Tufiq" },
       { id: 2, name: "Fahri" },
       { id: 3, name: "Adealism" },
@@ -23,38 +31,41 @@ export default function Home() {
     setUsers(dummyUsers);
   }, []);
 
-  const handleAddToDo = (user) => {
+  const handleAddToDo = (user: User) => {
     setTodoList([...todoList, { ...user, realPrice: "" }]);
   };
 
-  const handleRemoveToDo = (index) => {
+  const handleRemoveToDo = (index: number) => {
     const newTodoList = [...todoList];
     newTodoList.splice(index, 1);
     setTodoList(newTodoList);
   };
 
-  const handleRealPriceChange = (index, value) => {
+  const handleRealPriceChange = (index: number, value: string) => {
     const newTodoList = [...todoList];
     newTodoList[index].realPrice = value;
     setTodoList(newTodoList);
   };
 
-  const formatNumber = (value) => {
+  const formatNumber = (value: string) => {
     if (!value) return "";
     return parseFloat(value).toLocaleString("en-US");
   };
 
-  const parseNumber = (value) => {
+  const parseNumber = (value: string) => {
     return value.replace(/,/g, "");
   };
 
   const calculateDiscountPrice = (
-    realPrice,
-    totalAfterDiscount,
-    sumRealPrices
+    realPrice: string,
+    totalAfterDiscount: string,
+    sumRealPrices: number
   ) => {
-    if (sumRealPrices === 0 || !realPrice || !totalAfterDiscount) return 0;
-    return Math.round((realPrice / sumRealPrices) * totalAfterDiscount);
+    const realPriceNumber = parseFloat(realPrice);
+    const totalAfterDiscountNumber = parseFloat(totalAfterDiscount);
+    
+    if (sumRealPrices === 0 || isNaN(realPriceNumber) || isNaN(totalAfterDiscountNumber)) return 0;
+    return Math.round((realPriceNumber / sumRealPrices) * totalAfterDiscountNumber);
   };
 
   const sumRealPrices = todoList.reduce(
@@ -78,12 +89,12 @@ export default function Home() {
       </div>
       <h2 className="text-2xl font-bold mb-4">List</h2>
       {todoList.map((user, index) => (
-        <div key={index} className="mb-4 p-4  rounded-xl bg-white border-0 ">
+        <div key={index} className="mb-4 p-4 rounded-xl bg-white border-0">
           <div className="mb-2 flex justify-between">
             <h3 className="text-xl font-semibold">{user.name}</h3>
             <button
               onClick={() => handleRemoveToDo(index)}
-              className="p-2 bg-white-500 text-red-500  rounded-xl"
+              className="p-2 bg-white-500 text-red-500 rounded-xl"
             >
               x
             </button>
@@ -103,14 +114,15 @@ export default function Home() {
               placeholder="Discount Price"
               value={formatNumber(
                 calculateDiscountPrice(
-                  parseNumber(user.realPrice),
-                  parseNumber(totalAfterDiscount),
+                  user.realPrice, // Use the raw value as string
+                  totalAfterDiscount,
                   sumRealPrices
-                )
+                ).toString() // Convert the result to string
               )}
               disabled
               className="mt-2 p-2 border rounded-xl w-full bg-gray-200"
             />
+
           </div>
         </div>
       ))}
@@ -125,7 +137,7 @@ export default function Home() {
       </div>
       <div className="mt-4 p-4 border-t">
         <h2 className="text-xl font-bold">
-          Total Before Discount: {formatNumber(sumRealPrices)}
+          Total Before Discount: {formatNumber(sumRealPrices.toString())}
         </h2>
       </div>
     </main>
