@@ -3,18 +3,23 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: #eee
- 
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background-color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: black;
   }
-}
-
-body{
-  background-color: #eee;
-  min-height: 100vh;
-  padding: 1rem;
 }
